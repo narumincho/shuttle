@@ -44,6 +44,7 @@ async fn hello_world() -> HttpResponse {
             <div class="container">
                 <h1>Current Local Time</h1>
                 <p>{}</p>
+                <p><a href="https://github.com/narumincho/shuttle">GitHub Repository</a></p>
             </div>
         </body>
         </html>
