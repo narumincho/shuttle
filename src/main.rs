@@ -1,3 +1,4 @@
+use actix_files::Files;
 use actix_web::{get, web::ServiceConfig};
 use shuttle_actix_web::ShuttleActixWeb;
 
@@ -23,6 +24,7 @@ async fn hello_world() -> HttpResponse {
                     height: 100vh;
                     background-color: #f0f0f0;
                     margin: 0;
+                    flex-direction: column;
                 }}
                 .container {{
                     text-align: center;
@@ -46,6 +48,14 @@ async fn hello_world() -> HttpResponse {
                 <p>{}</p>
                 <p><a href="https://github.com/narumincho/shuttle">GitHub Repository</a></p>
             </div>
+            <script type="module">
+                import init, {{ greet }} from './pkg/frontend.js';
+                async function run() {{
+                    await init();
+                    greet();
+                }}
+                run();
+            </script>
         </body>
         </html>
         "#,
@@ -60,7 +70,8 @@ async fn hello_world() -> HttpResponse {
 #[shuttle_runtime::main]
 async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.service(hello_world);
+        cfg.service(hello_world)
+            .service(Files::new("/pkg", "./frontend/pkg"));
     };
 
     Ok(config.into())
